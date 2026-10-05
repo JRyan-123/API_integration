@@ -19,15 +19,16 @@ class CheckoutServices
     }
 
 
-    public function orderCheckout($amount,)
+    public function orderCheckout($amount, $paymentMethod)
     {
-        return DB::transaction(function () use ($amount) {
+        return DB::transaction(function () use ($amount, $paymentMethod) {
             $order = Order::create([
                 'amount' => $amount,
             ]);
 
             $session = $this->payMongo->createCheckoutSession(
                 $amount,
+                $paymentMethod,
                 route('payment.success'),
                 route('payment.cancel')
             );

@@ -14,7 +14,7 @@ class PaymentService
         //
     }
 
-    public function createCheckoutSession(int $amount, string $successUrl, string $cancelUrl): array
+    public function createCheckoutSession(int $amount, string $paymentMethod, string $successUrl, string $cancelUrl): array
     {
         $response = Http::withBasicAuth(config('services.paymongo.secret_key'), '')
             ->post('https://api.paymongo.com/v1/checkout_sessions', [
@@ -28,14 +28,22 @@ class PaymentService
                                 'quantity' => 1,
                             ],
                         ],
-                        'payment_method_types' => ['gcash'],
+                        'payment_method_types' => [$paymentMethod],
                         'success_url' => $successUrl,
                         'cancel_url' => $cancelUrl,
                     ],
                 ],
             ]);
 
-        return $response->json('data');
+        $response->throw();
+
+        $session = $response->json('data');
+
+        if (! is_array($session)) {
+            throw new \UnexpectedValueException('PayMongo returned an invalid checkout session response.');
+        }
+
+        return $session;
     }
  
 }
