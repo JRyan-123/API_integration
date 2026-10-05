@@ -18,8 +18,9 @@ class CheckoutController extends Controller
     }
 
     public function checkout(Request $request)
-    {
-        $session = $this->checkoutServices->orderCheckout($request->amount, $request->payment_method);
+    {   
+        $amount = $request->amount * 100;
+        $session = $this->checkoutServices->orderCheckout($amount, $request->payment_method);
 
         return redirect($session['attributes']['checkout_url']);
     }
