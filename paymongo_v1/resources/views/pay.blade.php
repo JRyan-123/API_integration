@@ -19,7 +19,7 @@
 <body>
     <div class="container">
         <h2>Payment</h2>
-        <form method="POST" action="">
+        <form method="POST" action="{{ route('checkout') }}">
             @csrf
             <input type="number" name="amount" placeholder="Amount in PHP (e.g. 100)" required>
             <button type="submit">Pay Now</button>
